@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 220 25% 4%;
+    --foreground: 200 100% 95%;
+
+    --card: 220 30% 8%;
+    --card-foreground: 200 100% 95%;
+
+    --popover: 220 30% 8%;
+    --popover-foreground: 200 100% 95%;
+
+    --primary: 190 100% 50%;
+    --primary-foreground: 220 25% 4%;
+
+    --secondary: 220 30% 12%;
+    --secondary-foreground: 200 100% 90%;
+
+    --muted: 220 20% 14%;
+    --muted-foreground: 200 20% 55%;
+
+    --accent: 260 80% 60%;
+    --accent-foreground: 200 100% 95%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 200 40% 18%;
+    --input: 200 40% 18%;
+    --ring: 190 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --neural-cyan: 190 100% 50%;
+    --neural-blue: 210 100% 60%;
+    --neural-purple: 260 80% 60%;
+    --neural-glow: 190 100% 70%;
+    --neural-dim: 200 40% 25%;
+
+    --gradient-neural: linear-gradient(135deg, hsl(190 100% 50% / 0.15), hsl(260 80% 60% / 0.1));
+    --gradient-card: linear-gradient(160deg, hsl(220 30% 12% / 0.8), hsl(220 25% 6% / 0.9));
+    --gradient-bg: radial-gradient(ellipse at 50% 50%, hsl(210 60% 8%) 0%, hsl(220 25% 4%) 70%);
+
+    --shadow-neural: 0 0 30px hsl(190 100% 50% / 0.15);
+    --shadow-glow: 0 0 60px hsl(190 100% 50% / 0.25);
+
+    --glass-bg: hsl(220 30% 10% / 0.6);
+    --glass-border: hsl(190 100% 50% / 0.15);
+    --glass-shadow: 0 8px 32px hsl(220 25% 4% / 0.4);
+
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+
+    --sidebar-background: 220 25% 6%;
+    --sidebar-foreground: 200 100% 90%;
+    --sidebar-primary: 190 100% 50%;
+    --sidebar-primary-foreground: 220 25% 4%;
+    --sidebar-accent: 220 30% 12%;
+    --sidebar-accent-foreground: 200 100% 90%;
+    --sidebar-border: 200 40% 18%;
+    --sidebar-ring: 190 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    overflow: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .neural-glow {
+    box-shadow: var(--shadow-neural);
+  }
+
+  .neural-glow-intense {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .text-neural {
+    color: hsl(var(--neural-cyan));
+    text-shadow: 0 0 20px hsl(var(--neural-cyan) / 0.5);
+  }
+
+  .text-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .neural-border {
+    border: 1px solid hsl(var(--neural-cyan) / 0.2);
+  }
+
+  .neural-border-active {
+    border: 1px solid hsl(var(--neural-cyan) / 0.5);
+    box-shadow: 0 0 15px hsl(var(--neural-cyan) / 0.15), inset 0 0 15px hsl(var(--neural-cyan) / 0.05);
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--neural-cyan) / 0.2); }
+  50% { box-shadow: 0 0 40px hsl(var(--neural-cyan) / 0.4); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
