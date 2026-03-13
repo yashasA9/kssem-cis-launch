@@ -38,9 +38,10 @@ const BrainVisualization = ({ stage, activated }: BrainVisualizationProps) => {
     const alpha = new Float32Array(totalPoints);
     const size = new Float32Array(totalPoints);
 
-    const cyanCol = new THREE.Color("hsl(190, 100%, 60%)");
-    const blueCol = new THREE.Color("hsl(210, 100%, 60%)");
-    const purpleCol = new THREE.Color("hsl(260, 80%, 65%)");
+    // Warm, high-contrast palette for projector visibility
+    const stemCol = new THREE.Color("hsl(38, 100%, 60%)"); // amber
+    const hemiLeftCol = new THREE.Color("hsl(320, 90%, 65%)"); // magenta
+    const hemiRightCol = new THREE.Color("hsl(270, 85%, 70%)"); // purple
 
     for (let i = 0; i < totalPoints; i++) {
       const p = allBrainPoints[i];
@@ -52,11 +53,11 @@ const BrainVisualization = ({ stage, activated }: BrainVisualizationProps) => {
       // Color by region
       let c: THREE.Color;
       if (i < regionRanges.stem.end) {
-        c = cyanCol;
+        c = stemCol;
       } else if (i < regionRanges.rightHemisphere.start) {
-        c = blueCol;
+        c = hemiLeftCol;
       } else {
-        c = purpleCol;
+        c = hemiRightCol;
       }
 
       col[i * 3] = c.r;
@@ -88,13 +89,13 @@ const BrainVisualization = ({ stage, activated }: BrainVisualizationProps) => {
       pos[i * 6 + 4] = pb[1] * 2.5;
       pos[i * 6 + 5] = pb[2] * 2.5;
 
-      // Cyan connections
-      col[i * 6] = 0;
-      col[i * 6 + 1] = 0.8;
-      col[i * 6 + 2] = 1;
-      col[i * 6 + 3] = 0;
-      col[i * 6 + 4] = 0.8;
-      col[i * 6 + 5] = 1;
+      // Warm golden connections
+      col[i * 6] = 1.0;
+      col[i * 6 + 1] = 0.75;
+      col[i * 6 + 2] = 0.3;
+      col[i * 6 + 3] = 1.0;
+      col[i * 6 + 4] = 0.75;
+      col[i * 6 + 5] = 0.3;
     }
 
     return { linePositions: pos, lineColors: col, lineCount: conns.length };
@@ -118,9 +119,12 @@ const BrainVisualization = ({ stage, activated }: BrainVisualizationProps) => {
         const targetAlpha = normalizedIdx < progress ? 1 : 0;
         alphaArr[i] += (targetAlpha - alphaArr[i]) * delta * 3;
 
-        // Pulse effect when activated
+        // Pulse effect when activated - make neurons brighter and more eye-catching
         if (activated && alphaArr[i] > 0.5) {
-          alphaArr[i] = 0.7 + Math.sin(pulseTimeRef.current * 3 + i * 0.1) * 0.3;
+          const base = 0.9;
+          const amplitude = 0.4;
+          const pulsed = base + Math.sin(pulseTimeRef.current * 3 + i * 0.12) * amplitude;
+          alphaArr[i] = Math.min(pulsed, 1.0);
         }
       }
       alphaAttr.needsUpdate = true;
@@ -129,7 +133,9 @@ const BrainVisualization = ({ stage, activated }: BrainVisualizationProps) => {
     // Update line visibility
     if (linesRef.current) {
       const mat = linesRef.current.material as THREE.LineBasicMaterial;
-      mat.opacity = Math.min(progress * 1.5, activated ? 0.6 : 0.3);
+      // When activated (i.e., during and after launch), push line brightness higher
+      const targetOpacity = activated ? 0.95 : 0.35;
+      mat.opacity = Math.min(progress * 1.8, targetOpacity);
     }
 
     // Rotation - slow ambient before launch, more dynamic when activated

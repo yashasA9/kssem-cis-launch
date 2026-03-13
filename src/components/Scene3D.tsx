@@ -21,9 +21,10 @@ const Scene3D = ({ launched, brainStage, activated }: Scene3DProps) => {
         gl={{ antialias: true, alpha: true }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.2} />
-          <pointLight position={[5, 5, 5]} intensity={0.5} color="#00d4ff" />
-          <pointLight position={[-5, -3, 3]} intensity={0.3} color="#8b5cf6" />
+          <ambientLight intensity={0.25} />
+          {/* Warm amber key light + magenta rim light for projector-friendly contrast */}
+          <pointLight position={[5, 5, 5]} intensity={0.7} color="#ffb347" />
+          <pointLight position={[-5, -3, 3]} intensity={0.45} color="#ff4fa3" />
 
           <ParticleBackground launched={launched} intensity={intensity} />
 

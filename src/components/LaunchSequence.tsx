@@ -1,28 +1,48 @@
-import { useCallback, useRef, useEffect, useState } from "react";
-import { gsap } from "gsap";
+import { useCallback, useRef, useEffect, useState } from 'react';
+import { gsap } from 'gsap';
 
 interface LaunchSequenceProps {
   onLaunch: () => void;
 }
 
 /**
- * Opening cinematic screen with keyboard flow.
+ * Opening cinematic screen with keyboard + fullscreen flow.
  *
  * 1. Rotating ambient brain scene plays.
- * 2. User presses Space to see the ready prompt.
- * 3. User presses any key (or Space again) to proceed into the quiz.
+ * 2. User presses any key to enter fullscreen and see the ready prompt.
+ * 3. User presses any key again to proceed into the quiz.
  */
 const LaunchSequence = ({ onLaunch }: LaunchSequenceProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [promptVisible, setPromptVisible] = useState(false);
+  const [fullscreenRequested, setFullscreenRequested] = useState(false);
+
+  const requestFullscreen = useCallback(async () => {
+    if (fullscreenRequested) return;
+
+    const element =
+      document.fullscreenElement ||
+      document.documentElement ||
+      document.getElementById('root');
+
+    try {
+      if (element && (element as any).requestFullscreen) {
+        await (element as any).requestFullscreen();
+      }
+    } catch {
+      // ignore fullscreen errors
+    } finally {
+      setFullscreenRequested(true);
+    }
+  }, [fullscreenRequested]);
 
   useEffect(() => {
     if (!containerRef.current) return;
     gsap.fromTo(
       containerRef.current.children,
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.15, duration: 1, ease: "power3.out" }
+      { opacity: 1, y: 0, stagger: 0.15, duration: 1, ease: 'power3.out' }
     );
   }, []);
 
@@ -34,14 +54,14 @@ const LaunchSequence = ({ onLaunch }: LaunchSequenceProps) => {
       duration: 0.2,
       yoyo: true,
       repeat: 1,
-      ease: "power2.inOut",
+      ease: 'power2.inOut',
     });
 
     gsap.to(containerRef.current, {
       opacity: 0,
       scale: 0.95,
       duration: 0.7,
-      ease: "power2.in",
+      ease: 'power2.in',
       onComplete: onLaunch,
     });
   }, [onLaunch]);
@@ -50,8 +70,9 @@ const LaunchSequence = ({ onLaunch }: LaunchSequenceProps) => {
     const handleKeyDown = async (event: KeyboardEvent) => {
       if (event.repeat) return;
 
-      if (!promptVisible && event.code === "Space") {
+      if (!promptVisible) {
         event.preventDefault();
+        await requestFullscreen();
         setPromptVisible(true);
         return;
       }
@@ -62,9 +83,9 @@ const LaunchSequence = ({ onLaunch }: LaunchSequenceProps) => {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [promptVisible, proceedToQuiz]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [promptVisible, requestFullscreen, proceedToQuiz]);
 
   return (
     <div
@@ -84,11 +105,11 @@ const LaunchSequence = ({ onLaunch }: LaunchSequenceProps) => {
       {/* Decorative line */}
       <div className="w-24 h-px bg-primary/30 my-2" />
 
-      {/* Instructional / prompt area */}
+      {/* Prompt area */}
       {promptVisible && (
         <div className="space-y-3 max-w-md">
           <p className="font-body text-base md:text-lg text-foreground/90">
-            Ready to launch{" "}
+            Ready to launch{' '}
             <span className="text-neural">
               KSSEM Computational Intelligence Society Student Branch
             </span>

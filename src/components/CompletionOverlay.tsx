@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
+import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
 
 interface CompletionOverlayProps {
   active: boolean;
@@ -20,9 +20,9 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
     const timer = setTimeout(() => {
       setShowText(true);
 
-      if ("speechSynthesis" in window) {
+      if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(
-          "Computational Intelligence Activated."
+          'Computational Intelligence Activated.'
         );
         utterance.rate = 0.7;
         utterance.pitch = 0.3;
@@ -30,7 +30,8 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
 
         const voices = window.speechSynthesis.getVoices();
         const deepVoice = voices.find(
-          (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("male")
+          (v) =>
+            v.lang.startsWith('en') && v.name.toLowerCase().includes('male')
         );
         if (deepVoice) utterance.voice = deepVoice;
 
@@ -55,9 +56,16 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
   useEffect(() => {
     if (showText && overlayRef.current) {
       gsap.fromTo(
-        overlayRef.current.querySelectorAll(".reveal-text"),
+        overlayRef.current.querySelectorAll('.reveal-text'),
         { opacity: 0, y: 20, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, stagger: 0.3, duration: 1.2, ease: "power3.out" }
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          stagger: 0.3,
+          duration: 1.2,
+          ease: 'power3.out',
+        }
       );
     }
   }, [showText]);
@@ -68,34 +76,48 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
 
     // Fade out "Intelligence Recorded" text first
     if (overlayRef.current) {
-      gsap.to(overlayRef.current.querySelectorAll(".reveal-text"), {
+      gsap.to(overlayRef.current.querySelectorAll('.reveal-text'), {
         opacity: 0,
         y: -30,
         duration: 0.8,
-        ease: "power2.in",
+        ease: 'power2.in',
         stagger: 0.05,
       });
     }
 
     // Animate dropdown card in
-    const dropdownEl = document.getElementById("cis-dropdown");
+    const dropdownEl = document.getElementById('cis-dropdown');
     if (dropdownEl) {
       gsap.fromTo(
         dropdownEl,
         { y: -120, opacity: 0, scale: 0.8 },
-        { y: 0, opacity: 1, scale: 1, duration: 1.4, ease: "power3.out", delay: 0.9 }
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.4,
+          ease: 'power3.out',
+          delay: 0.9,
+        }
       );
 
       // Stagger children inside
       gsap.fromTo(
-        dropdownEl.querySelectorAll(".dropdown-item"),
+        dropdownEl.querySelectorAll('.dropdown-item'),
         { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, stagger: 0.2, duration: 0.8, ease: "power3.out", delay: 1.3 }
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 1.3,
+        }
       );
 
       // Animate the society text falling in with a bounce
       gsap.fromTo(
-        dropdownEl.querySelectorAll(".fall-text"),
+        dropdownEl.querySelectorAll('.fall-text'),
         { opacity: 0, y: -60, rotateX: 40 },
         {
           opacity: 1,
@@ -103,7 +125,7 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
           rotateX: 0,
           stagger: 0.12,
           duration: 1,
-          ease: "bounce.out",
+          ease: 'bounce.out',
           delay: 1.8,
         }
       );
@@ -161,7 +183,9 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
                   <circle cx="9" cy="9" r="2" />
                   <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                 </svg>
-                <span className="text-[10px] text-display tracking-widest">ADD IMAGE</span>
+                <span className="text-[10px] text-display tracking-widest">
+                  ADD IMAGE
+                </span>
               </div>
             </div>
 
@@ -169,7 +193,10 @@ const CompletionOverlay = ({ active }: CompletionOverlayProps) => {
             <div className="dropdown-item w-16 h-px bg-primary/30 mx-auto mb-6" />
 
             {/* Society name - each word falls down */}
-            <div className="flex flex-col items-center gap-1" style={{ perspective: "600px" }}>
+            <div
+              className="flex flex-col items-center gap-1"
+              style={{ perspective: '600px' }}
+            >
               <span className="fall-text text-display text-xs tracking-[0.5em] text-muted-foreground">
                 IEEE
               </span>
